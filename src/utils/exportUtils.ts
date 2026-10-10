@@ -18,17 +18,20 @@ async function renderElementToDataUrl(
   element: HTMLElement,
   options: RenderOptions = {}
 ): Promise<string> {
-  const targetWidth = options.width || element.offsetWidth || 750;
-  const targetHeight = options.height || element.offsetHeight || 1050;
-  const ratio = options.pixelRatio || (element.offsetWidth ? targetWidth / element.offsetWidth : 2.0);
+  const targetWidth = options.width || 750;
+  const targetHeight = options.height || 1050;
+  const elWidth = element.offsetWidth || 375;
+  const elHeight = element.offsetHeight || 525;
   const bg = options.backgroundColor || '#181F1C';
 
   try {
-    // Primary: html-to-image (SVG foreignObject) preserves exact browser typography, kerning, and CSS layouts
+    // Primary: html-to-image with exact dimensions and 1.0 pixel ratio to avoid double-scaling distortion
     return await toPng(element, {
+      width: elWidth,
+      height: elHeight,
       canvasWidth: targetWidth,
       canvasHeight: targetHeight,
-      pixelRatio: ratio,
+      pixelRatio: 1.0,
       quality: 1.0,
       backgroundColor: bg,
       skipFonts: true,
@@ -41,7 +44,7 @@ async function renderElementToDataUrl(
   } catch (pngErr) {
     console.warn('toPng error, attempting html2canvas fallback:', pngErr);
     const canvas = await html2canvas(element, {
-      scale: ratio,
+      scale: targetWidth / elWidth,
       useCORS: true,
       allowTaint: true,
       backgroundColor: bg,
@@ -64,41 +67,13 @@ export async function exportElementAsPng(
     const targetWidth = exactDimensions.width;
     const targetHeight = exactDimensions.height;
 
-    // Render using html-to-image at high fidelity with CORS-safe options
+    // Render directly at exact target resolution (750x1050 px, crisp 300 DPI)
     const dataUrl = await renderElementToDataUrl(element, {
       width: targetWidth,
       height: targetHeight,
-      pixelRatio: targetWidth / (element.offsetWidth || 375),
       backgroundColor: '#121816'
     });
 
-    // Draw to an exact 750x1050 canvas to guarantee exact 300 DPI pixel dimensions
-    const img = new Image();
-    img.src = dataUrl;
-    await new Promise((resolve, reject) => {
-      img.onload = () => resolve(true);
-      img.onerror = reject;
-    });
-
-    const canvas = document.createElement('canvas');
-    canvas.width = targetWidth;
-    canvas.height = targetHeight;
-    const ctx = canvas.getContext('2d');
-
-    if (ctx) {
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-      ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-      const exactDataUrl = canvas.toDataURL('image/png', 1.0);
-
-      const link = document.createElement('a');
-      link.download = fileName;
-      link.href = exactDataUrl;
-      link.click();
-      return;
-    }
-
-    // Fallback if canvas context unavailable
     const link = document.createElement('a');
     link.download = fileName;
     link.href = dataUrl;

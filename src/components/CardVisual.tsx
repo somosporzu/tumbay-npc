@@ -332,7 +332,7 @@ export const CardVisual: React.FC<CardVisualProps> = ({
 
           {/* Rank badge */}
           <div
-            className={`w-auto min-w-[56px] mt-1 px-2 py-0.5 rounded-full text-[7.5px] font-black uppercase tracking-wide text-center border shadow-md leading-none whitespace-nowrap transition-colors ${
+            className={`inline-flex items-center justify-center min-w-[56px] mt-1 px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wide text-center border shadow-md leading-tight whitespace-nowrap transition-colors ${
               isEffectiveInkSaver ? 'bg-zinc-100 text-black border-black' : 'text-white'
             }`}
             style={{
@@ -341,20 +341,20 @@ export const CardVisual: React.FC<CardVisualProps> = ({
             }}
             title={`Rango: ${activeRank}${npc.rankVariant && npc.rankVariant !== 'normal' ? ` (${npc.rankVariant})` : ''}`}
           >
-            {rankLabel}
+            <span>{rankLabel}</span>
           </div>
 
           {/* Behavior / Modo de actuar: solo su nombre justo debajo del indicador de rango */}
           {npc.behaviorType && (
             <div
-              className={`w-auto min-w-[54px] mt-1 px-2 py-0.5 rounded-full text-[7px] font-black uppercase tracking-wide text-center border shadow-xs leading-none whitespace-nowrap transition-colors ${
+              className={`inline-flex items-center justify-center min-w-[54px] mt-1 px-2 py-0.5 rounded-full text-[7.5px] font-black uppercase tracking-wide text-center border shadow-xs leading-tight whitespace-nowrap transition-colors ${
                 isEffectiveInkSaver
                   ? 'bg-zinc-100 text-zinc-900 border-black'
-                  : 'bg-black/65 text-amber-200 border-amber-300/40 backdrop-blur-xs'
+                  : 'bg-black/80 text-amber-200 border-amber-300/40 backdrop-blur-xs'
               }`}
               title={`Modo de actuar: ${npc.behaviorType}${npc.behaviorDescription ? ` — ${npc.behaviorDescription}` : ''}`}
             >
-              {npc.behaviorType}
+              <span>{npc.behaviorType}</span>
             </div>
           )}
 
@@ -496,23 +496,23 @@ export const CardVisual: React.FC<CardVisualProps> = ({
         {/* Concept Tag Bar */}
         <div className="flex items-center gap-1.5 pl-0.5 flex-nowrap max-w-full">
           <div
-            className={`px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide whitespace-nowrap shrink-0 shadow-xs border ${
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide whitespace-nowrap shrink-0 shadow-xs border leading-tight ${
               isEffectiveInkSaver
                 ? 'bg-zinc-100 text-black border-black'
-                : 'bg-black/60 backdrop-blur-md border-white/35 text-white'
+                : 'bg-black/70 backdrop-blur-md border-white/35 text-white'
             }`}
           >
-            {npc.mainConcept}
+            <span>{npc.mainConcept}</span>
           </div>
           {npc.secondaryConcepts && npc.secondaryConcepts[0] && (
             <div
-              className={`px-2 py-0.5 rounded-full text-[8.5px] font-medium border whitespace-nowrap shrink-0 max-w-[150px] truncate ${
+              className={`inline-flex items-center px-2 py-0.5 rounded-full text-[8.5px] font-medium border whitespace-nowrap shrink-0 max-w-[150px] truncate leading-tight ${
                 isEffectiveInkSaver
                   ? 'bg-zinc-100 text-zinc-800 border-zinc-700'
-                  : 'bg-white/20 backdrop-blur-md text-white/90 border-white/25'
+                  : 'bg-white/25 backdrop-blur-md text-white/95 border-white/30'
               }`}
             >
-              {npc.secondaryConcepts[0]}
+              <span className="truncate">{npc.secondaryConcepts[0]}</span>
             </div>
           )}
         </div>
