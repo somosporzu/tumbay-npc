@@ -1,0 +1,6 @@
+{
+  "name": "Papa Tumbay - Creador de NPCs y Encuentros",
+  "description": "Generador de adversarios, cartas coleccionables imprimibles, constructor de encuentros y fichas de diseño para el Sistema Papa Tumbay.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

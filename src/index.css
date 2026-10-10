@@ -1,0 +1,85 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-heading: 'Cinzel', serif;
+    --font-body: 'Lora', Georgia, serif;
+    --font-ui: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    font-family: var(--font-body);
+    color: #26221f;
+    background-color: #f7f4ea;
+  }
+}
+
+.font-heading {
+  font-family: 'Cinzel', serif;
+}
+
+.font-body {
+  font-family: 'Lora', Georgia, serif;
+}
+
+.font-ui {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+}
+
+/* Subtle parchment grain */
+.bg-parchment {
+  background-color: #faf7ef;
+  background-image: radial-gradient(#ebe3cf 0.75px, transparent 0.75px), radial-gradient(#ebe3cf 0.75px, #faf7ef 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+}
+
+.bg-parchment-card {
+  background: linear-gradient(145deg, #fdfbf7 0%, #f7f2e5 50%, #f2ecdb 100%);
+}
+
+.bg-parchment-dark {
+  background: linear-gradient(145deg, #322b25 0%, #26201b 100%);
+}
+
+/* Custom scrollbar matching cream aesthetic */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f0eae1;
+}
+::-webkit-scrollbar-thumb {
+  background: #cfbe9f;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b59f7b;
+}
+
+/* Ensure trading cards never show any scrollbars under any circumstance */
+.papa-tumbay-card,
+.papa-tumbay-card * {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.papa-tumbay-card::-webkit-scrollbar,
+.papa-tumbay-card *::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}
