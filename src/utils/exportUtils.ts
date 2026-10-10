@@ -24,16 +24,7 @@ async function renderElementToDataUrl(
   const bg = options.backgroundColor || '#181F1C';
 
   try {
-    const canvas = await html2canvas(element, {
-      scale: ratio,
-      useCORS: true,
-      allowTaint: true,
-      backgroundColor: bg,
-      logging: false
-    });
-    return canvas.toDataURL('image/png', 1.0);
-  } catch (canvasErr) {
-    console.warn('html2canvas error, attempting toPng fallback:', canvasErr);
+    // Primary: html-to-image (SVG foreignObject) preserves exact browser typography, kerning, and CSS layouts
     return await toPng(element, {
       canvasWidth: targetWidth,
       canvasHeight: targetHeight,
@@ -47,6 +38,16 @@ async function renderElementToDataUrl(
         margin: '0'
       }
     });
+  } catch (pngErr) {
+    console.warn('toPng error, attempting html2canvas fallback:', pngErr);
+    const canvas = await html2canvas(element, {
+      scale: ratio,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: bg,
+      logging: false
+    });
+    return canvas.toDataURL('image/png', 1.0);
   }
 }
 
