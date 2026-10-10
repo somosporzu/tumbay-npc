@@ -493,29 +493,35 @@ export const CardVisual: React.FC<CardVisualProps> = ({
           isElevatedTraits ? 'space-y-1 pt-0' : 'space-y-1.5 pt-1'
         }`}
       >
-        {/* Concept Tag Bar */}
-        <div className="flex items-center gap-1.5 pl-0.5 flex-nowrap max-w-full">
-          <div
-            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide whitespace-nowrap shrink-0 shadow-xs border leading-tight ${
-              isEffectiveInkSaver
-                ? 'bg-zinc-100 text-black border-black'
-                : 'bg-black/70 backdrop-blur-md border-white/35 text-white'
-            }`}
-          >
-            <span>{npc.mainConcept}</span>
+        {/* Concept Tag Bar (Supports multiple concepts wrapping gracefully into a second line above the name) */}
+        {Boolean(npc.mainConcept || (npc.secondaryConcepts && npc.secondaryConcepts.length > 0)) && (
+          <div className="flex flex-wrap items-center gap-1.5 pl-0.5 max-w-full">
+            {npc.mainConcept && (
+              <div
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wide whitespace-nowrap shrink-0 shadow-xs border leading-tight ${
+                  isEffectiveInkSaver
+                    ? 'bg-zinc-100 text-black border-black'
+                    : 'bg-black/70 backdrop-blur-md border-white/35 text-white'
+                }`}
+              >
+                <span>{npc.mainConcept}</span>
+              </div>
+            )}
+            {npc.secondaryConcepts?.map((concept, idx) => (
+              <div
+                key={idx}
+                className={`inline-flex items-center px-2 py-0.5 rounded-full text-[8.5px] font-medium border whitespace-nowrap shrink-0 max-w-[150px] truncate leading-tight ${
+                  isEffectiveInkSaver
+                    ? 'bg-zinc-100 text-zinc-800 border-zinc-700'
+                    : 'bg-white/25 backdrop-blur-md text-white/95 border-white/30'
+                }`}
+                title={concept}
+              >
+                <span className="truncate">{concept}</span>
+              </div>
+            ))}
           </div>
-          {npc.secondaryConcepts && npc.secondaryConcepts[0] && (
-            <div
-              className={`inline-flex items-center px-2 py-0.5 rounded-full text-[8.5px] font-medium border whitespace-nowrap shrink-0 max-w-[150px] truncate leading-tight ${
-                isEffectiveInkSaver
-                  ? 'bg-zinc-100 text-zinc-800 border-zinc-700'
-                  : 'bg-white/25 backdrop-blur-md text-white/95 border-white/30'
-              }`}
-            >
-              <span className="truncate">{npc.secondaryConcepts[0]}</span>
-            </div>
-          )}
-        </div>
+        )}
 
         {/* Name Banner with customizable coordinated color and Action Stars */}
         <div

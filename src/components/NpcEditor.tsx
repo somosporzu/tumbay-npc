@@ -218,10 +218,15 @@ export const NpcEditor: React.FC<NpcEditorProps> = ({
 
   const handleRankChange = (newRank: NpcRank) => {
     const autoFormation = newRank === 'Pandilla' || newRank === 'Cuadrilla' ? 'Cuadrilla' : 'Solitario';
+    const baseAmenaza = RANK_BASE_STATS[newRank]?.amenazaBase ?? 0;
+    // La amenaza del NPC se ajusta sola según la base mínima de la criatura:
+    // Al elegir Solo sube a 7 y no puede bajar de ahí; Dúo a 5; Trío a 3; Cuadrilla a 2; Pandilla a 0.
+    const newTargetNA = Math.max(baseAmenaza, npc.targetNA);
     updateNpc({
       ...npc,
       rank: newRank,
-      unitFormation: npc.unitFormation || autoFormation
+      unitFormation: npc.unitFormation || autoFormation,
+      targetNA: newTargetNA
     });
   };
 
@@ -867,50 +872,60 @@ export const NpcEditor: React.FC<NpcEditorProps> = ({
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="text-[11px] font-bold text-[#6B5742] uppercase">
-                Amenaza del NPC (Encuentro)
-              </label>
-              <span className="text-[10px] text-[#7A644D] font-mono">
-                delta: {stats.threatDelta >= 0 ? `+${stats.threatDelta}` : stats.threatDelta}
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <button
-                type="button"
-                onClick={() => updateNpc({ ...npc, targetNA: Math.max(0, npc.targetNA - 1) })}
-                disabled={npc.targetNA <= 0}
-                className="w-7 h-7 rounded-lg bg-[#EFE6D2] hover:bg-[#E5DABF] disabled:opacity-40 text-[#473623] border border-[#CBB895] font-bold text-xs flex items-center justify-center cursor-pointer transition-all active:scale-95 shrink-0"
-                title="Disminuir Amenaza (-1)"
-              >
-                -
-              </button>
-              <input
-                type="range"
-                min="0"
-                max="16"
-                value={npc.targetNA}
-                onChange={(e) => updateNpc({ ...npc, targetNA: Number(e.target.value) }, true)}
-                onMouseUp={flushPendingUndo}
-                onTouchEnd={flushPendingUndo}
-                className="flex-1 accent-[#7C5A37]"
-              />
-              <button
-                type="button"
-                onClick={() => updateNpc({ ...npc, targetNA: Math.min(16, npc.targetNA + 1) })}
-                disabled={npc.targetNA >= 16}
-                className="w-7 h-7 rounded-lg bg-[#EFE6D2] hover:bg-[#E5DABF] disabled:opacity-40 text-[#473623] border border-[#CBB895] font-bold text-xs flex items-center justify-center cursor-pointer transition-all active:scale-95 shrink-0"
-                title="Aumentar Amenaza (+1)"
-              >
-                +
-              </button>
-              <span className="w-8 h-8 rounded-lg bg-[#EFE6D2] border border-[#CBB895] font-heading font-black text-sm text-[#261E16] flex items-center justify-center shrink-0">
-                {npc.targetNA}
-              </span>
-            </div>
-            <p className="text-[9.5px] text-[#7A644D] mt-1 leading-tight">
-              Efectiva: <strong>{stats.effectiveThreat}</strong> (Base: {stats.rankBaseThreat}). Escala ND y Aptitud en {stats.threatDelta >= 0 ? `+${stats.threatDelta}` : stats.threatDelta}.
-            </p>
+            {(() => {
+              const rankMinNA = RANK_BASE_STATS[npc.rank]?.amenazaBase ?? 0;
+              const maxNA = 16;
+              const currentNA = Math.max(rankMinNA, npc.targetNA);
+
+              return (
+                <>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-[11px] font-bold text-[#6B5742] uppercase">
+                      Amenaza del NPC (Base mín: {rankMinNA})
+                    </label>
+                    <span className="text-[10px] text-[#7A644D] font-mono">
+                      delta: {stats.threatDelta >= 0 ? `+${stats.threatDelta}` : stats.threatDelta}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => updateNpc({ ...npc, targetNA: Math.max(rankMinNA, currentNA - 1) })}
+                      disabled={currentNA <= rankMinNA}
+                      className="w-7 h-7 rounded-lg bg-[#EFE6D2] hover:bg-[#E5DABF] disabled:opacity-40 text-[#473623] border border-[#CBB895] font-bold text-xs flex items-center justify-center cursor-pointer transition-all active:scale-95 shrink-0"
+                      title={`Disminuir Amenaza (-1, mínimo ${rankMinNA} para ${npc.rank})`}
+                    >
+                      -
+                    </button>
+                    <input
+                      type="range"
+                      min={rankMinNA}
+                      max={maxNA}
+                      value={currentNA}
+                      onChange={(e) => updateNpc({ ...npc, targetNA: Math.max(rankMinNA, Number(e.target.value)) }, true)}
+                      onMouseUp={flushPendingUndo}
+                      onTouchEnd={flushPendingUndo}
+                      className="flex-1 accent-[#7C5A37]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => updateNpc({ ...npc, targetNA: Math.min(maxNA, currentNA + 1) })}
+                      disabled={currentNA >= maxNA}
+                      className="w-7 h-7 rounded-lg bg-[#EFE6D2] hover:bg-[#E5DABF] disabled:opacity-40 text-[#473623] border border-[#CBB895] font-bold text-xs flex items-center justify-center cursor-pointer transition-all active:scale-95 shrink-0"
+                      title="Aumentar Amenaza (+1)"
+                    >
+                      +
+                    </button>
+                    <span className="w-8 h-8 rounded-lg bg-[#EFE6D2] border border-[#CBB895] font-heading font-black text-sm text-[#261E16] flex items-center justify-center shrink-0">
+                      {currentNA}
+                    </span>
+                  </div>
+                  <p className="text-[9.5px] text-[#7A644D] mt-1 leading-tight">
+                    Efectiva: <strong>{stats.effectiveThreat}</strong> (Base {npc.rank}: {rankMinNA}). Escala ND y Aptitud en {stats.threatDelta >= 0 ? `+${stats.threatDelta}` : stats.threatDelta}.
+                  </p>
+                </>
+              );
+            })()}
           </div>
         </div>
       </div>
