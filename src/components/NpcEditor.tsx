@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { NpcData, NpcRank, Trait, BehaviorType } from '../types/npc';
 import { RANK_BASE_STATS, OFFICIAL_TRAITS, BEHAVIORS_PRESETS, PREBUILT_NPCS } from '../data/rulesData';
 import { AVATAR_PRESETS } from '../data/avatars';
-import { calculateNpcStats, isAutomaticStatTrait, validateNpcCreature } from '../utils/calculator';
+import { calculateNpcStats, isAutomaticStatTrait, validateNpcCreature, getTraitCostForRank } from '../utils/calculator';
 import {
   Sparkles,
   HelpCircle,
@@ -219,9 +219,10 @@ export const NpcEditor: React.FC<NpcEditorProps> = ({
   const handleRankChange = (newRank: NpcRank) => {
     const autoFormation = newRank === 'Pandilla' || newRank === 'Cuadrilla' ? 'Cuadrilla' : 'Solitario';
     const baseAmenaza = RANK_BASE_STATS[newRank]?.amenazaBase ?? 0;
-    // La amenaza del NPC se ajusta sola según la base mínima de la criatura:
+    // La amenaza del NPC se ajusta sola según la base mínima de la criatura (mínimo por rango) y el límite máximo de 11:
     // Al elegir Solo sube a 7 y no puede bajar de ahí; Dúo a 5; Trío a 3; Cuadrilla a 2; Pandilla a 0.
-    const newTargetNA = Math.max(baseAmenaza, npc.targetNA);
+    // Nivel máximo de amenaza es 11.
+    const newTargetNA = Math.min(11, Math.max(baseAmenaza, npc.targetNA));
     updateNpc({
       ...npc,
       rank: newRank,
@@ -367,7 +368,8 @@ export const NpcEditor: React.FC<NpcEditorProps> = ({
   const handleGenerateRandom = () => {
     const randomRanks: NpcRank[] = ['Pandilla', 'Cuadrilla', 'Trío', 'Dúo', 'Solo'];
     const chosenRank = randomRanks[Math.floor(Math.random() * randomRanks.length)];
-    const chosenNA = Math.floor(Math.random() * 5) + 2;
+    const minNA = RANK_BASE_STATS[chosenRank]?.amenazaBase ?? 0;
+    const chosenNA = Math.min(11, Math.max(minNA, Math.floor(Math.random() * 3) + minNA));
 
     const names = [
       { name: 'Acechador de la Cripta', concept: 'Cazador carroñero', sec: ['Oído agudo', 'Sigilo'], avatar: 'skeleton', behavior: 'Depredador' },
@@ -477,7 +479,7 @@ export const NpcEditor: React.FC<NpcEditorProps> = ({
             Criatura Activa: <span className="text-[#7C5A37] font-sans font-black">{npc.name || 'Sin Nombre'}</span>
           </span>
           <span className="text-[11px] text-[#7A644D] font-serif hidden sm:inline italic">
-            ({npc.rank} • ND {stats.finalBarriers.join('/')} • Aptitud {stats.finalAptitude >= 0 ? `+${stats.finalAptitude}` : stats.finalAptitude})
+            ({npc.rank} • ND {stats.finalBarriers.join('/')} • Aptitud {stats.finalAptitude})
           </span>
         </div>
 
@@ -831,7 +833,7 @@ export const NpcEditor: React.FC<NpcEditorProps> = ({
                       <strong>Barreras:</strong> {base.barriers.length} (ND {base.barriers.join('/')})
                     </div>
                     <div>
-                      <strong>Aptitud:</strong> +{base.aptitude} | <strong>Actuar:</strong> {base.actions}
+                      <strong>Aptitud:</strong> {base.aptitude} | <strong>Actuar:</strong> {base.actions}
                     </div>
                     <div className="text-[9.5px] text-[#8C6D44] font-semibold">
                       Amenaza: {base.amenazaBase} • {base.typicalCount}
@@ -874,14 +876,14 @@ export const NpcEditor: React.FC<NpcEditorProps> = ({
           <div>
             {(() => {
               const rankMinNA = RANK_BASE_STATS[npc.rank]?.amenazaBase ?? 0;
-              const maxNA = 16;
-              const currentNA = Math.max(rankMinNA, npc.targetNA);
+              const maxNA = 11;
+              const currentNA = Math.min(maxNA, Math.max(rankMinNA, npc.targetNA));
 
               return (
                 <>
                   <div className="flex items-center justify-between mb-1">
                     <label className="text-[11px] font-bold text-[#6B5742] uppercase">
-                      Amenaza del NPC (Base mín: {rankMinNA})
+                      Amenaza del NPC (Base mín: {rankMinNA} • Máx: {maxNA})
                     </label>
                     <span className="text-[10px] text-[#7A644D] font-mono">
                       delta: {stats.threatDelta >= 0 ? `+${stats.threatDelta}` : stats.threatDelta}
@@ -902,7 +904,7 @@ export const NpcEditor: React.FC<NpcEditorProps> = ({
                       min={rankMinNA}
                       max={maxNA}
                       value={currentNA}
-                      onChange={(e) => updateNpc({ ...npc, targetNA: Math.max(rankMinNA, Number(e.target.value)) }, true)}
+                      onChange={(e) => updateNpc({ ...npc, targetNA: Math.min(maxNA, Math.max(rankMinNA, Number(e.target.value))) }, true)}
                       onMouseUp={flushPendingUndo}
                       onTouchEnd={flushPendingUndo}
                       className="flex-1 accent-[#7C5A37]"
@@ -912,7 +914,7 @@ export const NpcEditor: React.FC<NpcEditorProps> = ({
                       onClick={() => updateNpc({ ...npc, targetNA: Math.min(maxNA, currentNA + 1) })}
                       disabled={currentNA >= maxNA}
                       className="w-7 h-7 rounded-lg bg-[#EFE6D2] hover:bg-[#E5DABF] disabled:opacity-40 text-[#473623] border border-[#CBB895] font-bold text-xs flex items-center justify-center cursor-pointer transition-all active:scale-95 shrink-0"
-                      title="Aumentar Amenaza (+1)"
+                      title={`Aumentar Amenaza (+1, máximo ${maxNA})`}
                     >
                       +
                     </button>
@@ -921,7 +923,7 @@ export const NpcEditor: React.FC<NpcEditorProps> = ({
                     </span>
                   </div>
                   <p className="text-[9.5px] text-[#7A644D] mt-1 leading-tight">
-                    Efectiva: <strong>{stats.effectiveThreat}</strong> (Base {npc.rank}: {rankMinNA}). Escala ND y Aptitud en {stats.threatDelta >= 0 ? `+${stats.threatDelta}` : stats.threatDelta}.
+                    Efectiva: <strong>{stats.effectiveThreat}</strong> (Base {npc.rank}: {rankMinNA}, Máx: {maxNA}). Escala ND y Aptitud en {stats.threatDelta >= 0 ? `+${stats.threatDelta}` : stats.threatDelta}.
                   </p>
                 </>
               );
@@ -942,7 +944,7 @@ export const NpcEditor: React.FC<NpcEditorProps> = ({
             </h3>
           </div>
           <span className="text-xs text-[#7A644E] font-serif italic">
-            Ventajas restan Amenaza; desventajas suman Amenaza
+            Los rasgos no se suman a la Amenaza efectiva a menos que sean desventaja
           </span>
         </div>
 
@@ -1079,7 +1081,12 @@ export const NpcEditor: React.FC<NpcEditorProps> = ({
                           </span>
                         )}
                         <span className="text-[9.5px] text-[#705E4B]">
-                          {t.cost > 0 ? `(Costo ${t.cost} NA)` : t.cost < 0 ? `(Valor +${Math.abs(t.cost)} NA)` : '(Costo 0)'}
+                          {(() => {
+                            const rankCost = getTraitCostForRank(t, npc.rank);
+                            if (t.category === 'desventaja' || rankCost < 0) return `(Desventaja: +${Math.abs(rankCost)} a Amenaza)`;
+                            if (rankCost > 0) return `(Costo ${rankCost})`;
+                            return '(Costo 0)';
+                          })()}
                         </span>
                         {isAutoStat ? (
                           <span className="text-[9px] font-semibold text-[#66533D]">
@@ -1181,21 +1188,26 @@ export const NpcEditor: React.FC<NpcEditorProps> = ({
                           </span>
                         )}
                       </div>
-                      <span
-                        className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${
-                          trait.cost > 0
-                            ? 'bg-[#EBD6CF] text-[#7A2B1D]'
-                            : trait.cost < 0
-                            ? 'bg-[#DFE7D6] text-[#345928]'
-                            : 'bg-[#EBE2D0] text-[#635340]'
-                        }`}
-                      >
-                        {trait.cost > 0
-                          ? `Costo ${trait.cost} NA`
-                          : trait.cost < 0
-                          ? `Valor +${Math.abs(trait.cost)} NA`
-                          : 'Costo 0'}
-                      </span>
+                      {(() => {
+                        const rankCost = getTraitCostForRank(trait, npc.rank);
+                        return (
+                          <span
+                            className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${
+                              trait.category === 'desventaja' || rankCost < 0
+                                ? 'bg-[#DFE7D6] text-[#345928]'
+                                : rankCost > 0
+                                ? 'bg-[#EBD6CF] text-[#7A2B1D]'
+                                : 'bg-[#EBE2D0] text-[#635340]'
+                            }`}
+                          >
+                            {trait.category === 'desventaja' || rankCost < 0
+                              ? `+${Math.abs(rankCost)} a Amenaza (Desventaja)`
+                              : rankCost > 0
+                              ? `Costo ${rankCost}`
+                              : 'Coste 0'}
+                          </span>
+                        );
+                      })()}
                     </div>
                     <p className="text-[11px] text-[#594735] leading-snug">
                       {currentInNpc?.effect || trait.effect}

@@ -31,7 +31,7 @@ export const RANK_BASE_STATS: Record<
   Cuadrilla: {
     npcCount: 4,
     barriers: [8, 9],
-    aptitude: 4,
+    aptitude: 3,
     actions: 1,
     amenazaBase: 2,
     typicalCount: '4 criaturas',
@@ -363,7 +363,7 @@ export const PREBUILT_NPCS: NpcData[] = [
     behaviorType: 'Bestia',
     behaviorDescription: 'Bestia. Rodean a un personaje y huyen si pierden la mitad de sus Barreras.',
     avatarPreset: 'wolf',
-    notes: 'Pandilla (6 NPC, Amenaza base 0) con Amenaza 7: ND 6 + 7 = ND 13, Aptitud +8, Actuar 1.'
+    notes: 'Pandilla (6 NPC, Amenaza base 0) con Amenaza 7: ND 6 + 7 = ND 13, Aptitud 8, Actuar 1.'
   },
   {
     id: 'bandido_veterano',
@@ -378,7 +378,7 @@ export const PREBUILT_NPCS: NpcData[] = [
     behaviorType: 'Cobarde',
     behaviorDescription: 'Cobarde. Huyen o se rinden en cuanto se les rompe la primera Barrera.',
     avatarPreset: 'bandit',
-    notes: 'Cuadrilla (4 NPC, Amenaza base 2) con Amenaza 7: ND 8/9 + (7 - 2) = ND 13/14, Aptitud +9, Actuar 1.'
+    notes: 'Cuadrilla (4 NPC, Amenaza base 2) con Amenaza 7: ND 8/9 + (7 - 2) = ND 13/14, Aptitud 8, Actuar 1.'
   },
   {
     id: 'ogro_de_la_cienaga',
@@ -395,7 +395,7 @@ export const PREBUILT_NPCS: NpcData[] = [
     behaviorType: 'Fanático',
     behaviorDescription: 'Fanático. Atacan al que más cerca esté y no huyen jamás.',
     avatarPreset: 'ogre',
-    notes: 'Dúo (2 NPC, Amenaza base 5) con Amenaza 8 y Piel dura 2 (Amenaza efectiva 6): ND 10/11/12 + 1 + 2 = ND 13/14/15, Aptitud +8, Actuar 2.'
+    notes: 'Dúo (2 NPC, Amenaza base 5) con Amenaza 8 y Piel dura (+2 ND): ND 10/11/12 + (8 - 5) + 2 = ND 15/16/17, Aptitud 10, Actuar 2.'
   },
   {
     id: 'hechicero_del_abismo',
@@ -415,7 +415,7 @@ export const PREBUILT_NPCS: NpcData[] = [
     behaviorType: 'Cobarde',
     behaviorDescription: 'Cobarde. Se esconden tras sus aliados y huyen al primer golpe.',
     avatarPreset: 'cultist',
-    notes: 'Dúo (2 NPC, Amenaza base 5) con Amenaza 8 y Dotado (costo 2 -> Amenaza efectiva 6): ND 10/11/12 + 1 = ND 11/12/13, Aptitud +8, Actuar 2. Conjuros: 3 al día.'
+    notes: 'Dúo (2 NPC, Amenaza base 5) con Amenaza 8 y Dotado: ND 10/11/12 + (8 - 5) = ND 13/14/15, Aptitud 10, Actuar 2. Conjuros: 3 al día.'
   },
   {
     id: 'dragon_joven',
@@ -436,6 +436,6 @@ export const PREBUILT_NPCS: NpcData[] = [
     behaviorType: 'Bestia',
     behaviorDescription: 'Bestia. Vuela, lanza el aliento sobre el grupo y se retira si pierde la mitad de sus Barreras.',
     avatarPreset: 'dragon',
-    notes: 'Solo (1 NPC, Amenaza base 7) con Amenaza 8 y Golpe de área (costo 2 en Solo -> Amenaza efectiva 6): ND 13/14/15/16 - 1 = ND 12/13/14/15, Aptitud +8, Actuar 3.'
+    notes: 'Solo (1 NPC, Amenaza base 7) con Amenaza 8 y Golpe de área: ND 13/14/15/16 + (8 - 7) = ND 14/15/16/17, Aptitud 10, Actuar 3.'
   }
 ];

@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { NpcData, CalculatedNpcStats } from '../types/npc';
 import { exportElementAsPdf, exportElementAsPng } from '../utils/exportUtils';
-import { isAutomaticStatTrait } from '../utils/calculator';
+import { isAutomaticStatTrait, getTraitCostForRank } from '../utils/calculator';
 import { Download, FileText, Printer, Shield, Sword, Eye, Calculator, Info } from 'lucide-react';
 
 interface DesignSheetProps {
@@ -81,14 +81,15 @@ export const DesignSheet: React.FC<DesignSheetProps> = ({ npc, stats }) => {
       ? 'Ninguno. Amenaza efectiva: ' + stats.effectiveThreat + '.'
       : npc.selectedTraits
           .map((t) => {
-            if (t.cost > 0) return `${t.name} (costo ${t.cost})`;
-            if (t.cost < 0) return `${t.name} (valor +${Math.abs(t.cost)})`;
-            return `${t.name} (menor, costo 0)`;
+            const cost = getTraitCostForRank(t, npc.rank);
+            if (t.category === 'desventaja' || cost < 0) return `${t.name} (desventaja: +${Math.abs(cost)} Amenaza)`;
+            if (cost > 0) return `${t.name} (costo -${cost} Amenaza)`;
+            return `${t.name} (costo 0)`;
           })
           .join(', ') +
         `. Amenaza efectiva: ${npc.targetNA}${
-          stats.traitsCostSum > 0 ? ` - ${stats.traitsCostSum}` : ''
-        }${stats.traitsValueSum > 0 ? ` + ${stats.traitsValueSum}` : ''} = ${stats.effectiveThreat}.`;
+          stats.traitsCostSum > 0 ? ` - ${stats.traitsCostSum} [rasgos]` : ''
+        }${stats.traitsValueSum > 0 ? ` + ${stats.traitsValueSum} [desventajas]` : ''} = ${stats.effectiveThreat}.`;
 
   // Barriers math breakdown according to Borrador v0.4
   const deltaStr = stats.threatDelta >= 0 ? `+${stats.threatDelta}` : `${stats.threatDelta}`;
@@ -251,7 +252,7 @@ export const DesignSheet: React.FC<DesignSheetProps> = ({ npc, stats }) => {
                     </span>
                   )}
                   <span className="text-xs text-[#6B5A47] font-normal">
-                    (Base NA 0: {stats.baseBarriers.length} Barrera(s) [ND {stats.baseBarriers.join('/')}], Aptitud +{stats.baseAptitude}, Actuar {stats.baseActions})
+                    (Base: {stats.baseBarriers.length} Barrera(s) [ND {stats.baseBarriers.join('/')}], Aptitud {stats.baseAptitude}, Actuar {stats.baseActions})
                   </span>
                 </td>
               </tr>
@@ -343,11 +344,11 @@ export const DesignSheet: React.FC<DesignSheetProps> = ({ npc, stats }) => {
                 </td>
                 <td className="p-2.5 sm:p-3 text-[#292017]">
                   <span className="font-black text-base mr-2">
-                    {stats.finalAptitude >= 0 ? `+${stats.finalAptitude}` : stats.finalAptitude}
+                    {stats.finalAptitude}
                   </span>
                   <span className="text-xs text-[#6B5A47]">
-                    (Base +{stats.baseAptitude} + delta ({stats.effectiveThreat} - {stats.rankBaseThreat})
-                    {npc.selectedTraits.some((t) => t.id === 'torpe') ? ' - 2 por Torpe' : ''} = {stats.finalAptitude >= 0 ? `+${stats.finalAptitude}` : stats.finalAptitude}).
+                    (Base {stats.baseAptitude} + delta ({stats.effectiveThreat} - {stats.rankBaseThreat})
+                    {npc.selectedTraits.some((t) => t.id === 'torpe') ? ' - 2 por Torpe' : ''} = {stats.finalAptitude}).
                     Suma a todas las tiradas: atacar, resistir efectos y fuera de combate.
                   </span>
                 </td>
@@ -398,7 +399,7 @@ export const DesignSheet: React.FC<DesignSheetProps> = ({ npc, stats }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
             <div className="space-y-1">
               <div>
-                <strong className="text-[#261E16]">Tirada de Ataque:</strong> Tira <strong>2d6 + {stats.finalAptitude}</strong> contra el ND de la Barrera activa del PJ (o <strong>3d6</strong> conservando los 2 más altos si aplica su Concepto principal o relevante).
+                <strong className="text-[#261E16]">Tirada de Ataque:</strong> Tira <strong>2d6 {stats.finalAptitude >= 0 ? `+ ${stats.finalAptitude}` : `- ${Math.abs(stats.finalAptitude)}`}</strong> contra el ND de la Barrera activa del PJ (o <strong>3d6</strong> conservando los 2 más altos si aplica su Concepto principal o relevante).
               </div>
               <div>
                 <strong className="text-[#261E16]">Crítico:</strong> Doble 6 en los dados = El personaje pierde una acción.
@@ -409,7 +410,7 @@ export const DesignSheet: React.FC<DesignSheetProps> = ({ npc, stats }) => {
             </div>
             <div className="space-y-1">
               <div>
-                <strong className="text-[#261E16]">Resistir Efectos:</strong> Cuando un conjuro de efecto lo afecta, tira <strong>2d6 + {stats.finalAptitude}</strong> contra el ND del conjuro.
+                <strong className="text-[#261E16]">Resistir Efectos:</strong> Cuando un conjuro de efecto lo afecta, tira <strong>2d6 {stats.finalAptitude >= 0 ? `+ ${stats.finalAptitude}` : `- ${Math.abs(stats.finalAptitude)}`}</strong> contra el ND del conjuro.
               </div>
               <div>
                 <strong className="text-[#261E16]">Iniciativa:</strong> Todos los NPCs del mismo bando actúan juntos, antes o después de los personajes.

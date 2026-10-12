@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import { NpcData, CalculatedNpcStats, CardFrameTheme } from '../types/npc';
 import { exportElementAsPng, exportElementAsPdf } from '../utils/exportUtils';
+import { PorzuuLogo } from './PorzuuLogo';
 import {
   Download,
   FileText,
@@ -365,8 +366,8 @@ export const CollectibleCard: React.FC<CollectibleCardProps> = ({
       {/* Studio Header & Quick Bar */}
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3 bg-[#FAF6EE] p-3 rounded-2xl border border-[#DFD3BE] shadow-2xs no-print">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-[#7C5A37] text-[#FAF6EE] flex items-center justify-center font-black text-sm shadow-2xs border border-[#634527]">
-            PT
+          <div className="w-9 h-9 flex items-center justify-center shrink-0 drop-shadow-xs" title="Logo">
+            <PorzuuLogo className="w-full h-full object-contain" />
           </div>
           <div>
             <h2 className="text-sm sm:text-base font-heading font-black text-[#261E16] leading-tight flex items-center gap-2 flex-wrap">

@@ -67,15 +67,16 @@ export interface NpcData {
 }
 
 export interface CalculatedNpcStats {
-  targetNA: number; // Amenaza del NPC / del encuentro
-  effectiveThreat: number; // Amenaza efectiva = Amenaza - costos + valores
-  rankBaseThreat: number; // Amenaza base del Rango (0, 3, 4, 7)
-  threatDelta: number; // Amenaza efectiva - Amenaza base del Rango
+  targetNA: number; // Amenaza base elegida del NPC
+  effectiveThreat: number; // Amenaza efectiva según documento base: Amenaza elegida - costos de rasgos + desventajas
+  rankBaseThreat: number; // Amenaza base mínima del Rango (Pandilla 0, Cuadrilla 2, Trío 3, Dúo 5, Solo 7)
+  threatDelta: number; // Amenaza efectiva - Amenaza base del Rango (escala Barreras y Aptitud)
   isEffectiveThreatBelowBase: boolean;
-  traitsCostSum: number; // suma de costos de ventajas
-  traitsValueSum: number; // suma de valores de desventajas
-  netTraitModifier: number; // - costos + valores
-  resultNA: number; // alias for effectiveThreat (backward compatibility)
+  traitsCostSum: number; // suma de costos de rasgos/ventajas (restan a la amenaza efectiva)
+  traitsValueSum: number; // suma de valores de desventajas (suman a la amenaza efectiva)
+  traitsDisadvantageSum: number; // alias para suma de desventajas
+  netTraitModifier: number; // modificador neto (- costos + desventajas)
+  resultNA: number; // alias para effectiveThreat (visible en la carta)
   baseBarriers: number[];
   finalBarriers: number[];
   baseAptitude: number;

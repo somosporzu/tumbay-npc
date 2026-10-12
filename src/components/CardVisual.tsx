@@ -618,14 +618,14 @@ export const CardVisual: React.FC<CardVisualProps> = ({
               backgroundColor: isEffectiveInkSaver ? '#FFFFFF' : theme.medallionBg,
               borderColor: isEffectiveInkSaver ? '#000000' : theme.medallionBorder
             }}
-            title={`Aptitud ${stats.finalAptitude >= 0 ? `+${stats.finalAptitude}` : stats.finalAptitude} (Suma a 2d6/3d6)`}
+            title={`Aptitud ${stats.finalAptitude} (Suma a 2d6/3d6)`}
           >
             <span
               className={`font-heading text-[22px] font-black leading-none drop-shadow-md select-none ${
                 isEffectiveInkSaver ? 'text-black font-black' : 'text-white'
               }`}
             >
-              {stats.finalAptitude >= 0 ? `+${stats.finalAptitude}` : stats.finalAptitude}
+              {stats.finalAptitude}
             </span>
             <span
               className={`absolute bottom-1 text-[6px] font-black uppercase tracking-widest leading-none select-none ${

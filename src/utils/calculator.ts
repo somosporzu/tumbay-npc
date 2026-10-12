@@ -60,29 +60,49 @@ export function calculateNpcStats(npc: NpcData): CalculatedNpcStats {
   }
 
   // Calculate costs & values using the rank-specific cost table
-  let traitsCostSum = 0; // advantages (cost > 0, subtract from threat)
-  let traitsValueSum = 0; // disadvantages (cost < 0, add to threat)
+  // Regla oficial Papa Tumbay Borrador v0.4 (Documento Base):
+  // Los costos de los rasgos (ventajas) descuentan presupuesto de Amenaza (- costo).
+  // Las desventajas otorgan bono de Amenaza (suma +N a la Amenaza).
+  let traitsCostSum = 0; // ventajas con costo (restan a la amenaza efectiva)
+  let traitsValueSum = 0; // desventajas (suman a la amenaza efectiva)
 
   for (const t of activeTraits) {
     const cost = getTraitCostForRank(t, npc.rank);
     if (cost > 0) {
       traitsCostSum += cost;
-    } else if (cost < 0) {
+    } else if (cost < 0 || t.category === 'desventaja') {
       traitsValueSum += Math.abs(cost);
     }
   }
 
+  const traitsDisadvantageSum = traitsValueSum;
+  // Modificador neto según documento base: - costos de ventajas + desventajas
   const netTraitModifier = -traitsCostSum + traitsValueSum;
-  // Threat according to Papa Tumbay Borrador v0.4
-  const targetThreat = npc.targetNA;
-  const effectiveThreat = targetThreat + netTraitModifier;
-  const rankBaseThreat = baseStats.amenazaBase;
-  const threatDelta = effectiveThreat - rankBaseThreat;
-  const isEffectiveThreatBelowBase = effectiveThreat < 0;
 
-  if (effectiveThreat < 0) {
+  // Amenaza según Papa Tumbay Borrador v0.4
+  // Target threat is the base threat chosen (minimum by rank)
+  // Effective threat is targetThreat - traitsCostSum + traitsValueSum
+  const targetThreat = npc.targetNA;
+  const rawEffectiveThreat = targetThreat + netTraitModifier;
+  const effectiveThreat = Math.max(0, Math.min(11, rawEffectiveThreat));
+  const rankBaseThreat = baseStats.amenazaBase;
+  // All barrier and aptitude calculations scale from effectiveThreat (not base)
+  const threatDelta = effectiveThreat - rankBaseThreat;
+  const isEffectiveThreatBelowBase = effectiveThreat < rankBaseThreat;
+
+  if (effectiveThreat < rankBaseThreat) {
     warnings.push(
-      `La Amenaza efectiva (${effectiveThreat}) es menor que 0. El manual v0.4 indica: "La Amenaza efectiva nunca debería bajar de 0."`
+      `La Amenaza efectiva (${effectiveThreat}) es menor que la base del rango ${npc.rank} (${rankBaseThreat}).`
+    );
+  }
+  if (rawEffectiveThreat < 0) {
+    warnings.push(
+      `La Amenaza efectiva calculada (${rawEffectiveThreat}) es menor que 0. El manual v0.4 indica: "La Amenaza efectiva nunca debería bajar de 0."`
+    );
+  }
+  if (rawEffectiveThreat > 11) {
+    warnings.push(
+      `La Amenaza efectiva (${rawEffectiveThreat}) supera el nivel máximo de 11 permitido (ajustada al límite de 11).`
     );
   }
 
@@ -187,6 +207,7 @@ export function calculateNpcStats(npc: NpcData): CalculatedNpcStats {
     isEffectiveThreatBelowBase,
     traitsCostSum,
     traitsValueSum,
+    traitsDisadvantageSum,
     netTraitModifier,
     resultNA: effectiveThreat,
     baseBarriers: baseStats.barriers,
@@ -358,14 +379,17 @@ export function validateNpcCreature(npc: NpcData, stats: CalculatedNpcStats): Cr
     type: traitsWithinBudget ? 'success' : 'warning'
   });
 
-  // 5. Amenaza Efectiva vs Amenaza Base del Rango (Regla v0.4)
-  const threatValid = !stats.isEffectiveThreatBelowBase;
+  // 5. Amenaza Efectiva vs Amenaza Base del Rango y Límite Máximo 11 (Regla v0.4)
+  const isThreatAboveMax = stats.effectiveThreat > 11;
+  const threatValid = !stats.isEffectiveThreatBelowBase && !isThreatAboveMax;
   checks.push({
     id: 'threat_balance',
-    title: 'Amenaza Efectiva vs Base del Rango',
+    title: 'Amenaza Efectiva (Base y Máx 11)',
     passed: threatValid,
-    message: threatValid
-      ? `Amenaza efectiva: ${stats.effectiveThreat} (Base de ${npc.rank}: ${stats.rankBaseThreat}, delta ${stats.threatDelta >= 0 ? `+${stats.threatDelta}` : stats.threatDelta}). Aptitud ${stats.finalAptitude >= 0 ? `+${stats.finalAptitude}` : stats.finalAptitude}, Barreras: ND ${stats.finalBarriers.join('/')}.`
+    message: isThreatAboveMax
+      ? `La Amenaza efectiva (${stats.effectiveThreat}) supera el nivel máximo de 11.`
+      : threatValid
+      ? `Amenaza efectiva: ${stats.effectiveThreat} (Base de ${npc.rank}: ${stats.rankBaseThreat}, Máx: 11, delta ${stats.threatDelta >= 0 ? `+${stats.threatDelta}` : stats.threatDelta}). Aptitud ${stats.finalAptitude}, Barreras: ND ${stats.finalBarriers.join('/')}.`
       : `La Amenaza efectiva (${stats.effectiveThreat}) es menor que la base del ${npc.rank} (${stats.rankBaseThreat}). El manual v0.4 indica que nunca debería bajar de la base del Rango ni de 0.`,
     type: threatValid ? 'success' : 'warning'
   });

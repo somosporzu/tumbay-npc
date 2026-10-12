@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Outer Black Sticker Outline -->
+  <path
+    d="M 256 54
+       L 198 142
+       L 124 96
+       C 112 145 102 195 106 236
+       C 107 245 110 252 112 256
+       C 94 280 82 312 82 344
+       C 82 416 160 464 256 464
+       C 352 464 430 416 430 344
+       C 430 312 418 280 400 256
+       C 402 252 405 245 406 236
+       C 410 195 400 145 388 96
+       L 314 142
+       Z"
+    fill="#000000"
+    stroke="#000000"
+    stroke-width="50"
+    stroke-linejoin="round"
+    stroke-linecap="round"
+  />
+
+  <!-- Middle White Sticker Contour -->
+  <path
+    d="M 256 54
+       L 198 142
+       L 124 96
+       C 112 145 102 195 106 236
+       C 107 245 110 252 112 256
+       C 94 280 82 312 82 344
+       C 82 416 160 464 256 464
+       C 352 464 430 416 430 344
+       C 430 312 418 280 400 256
+       C 402 252 405 245 406 236
+       C 410 195 400 145 388 96
+       L 314 142
+       Z"
+    fill="#FFFFFF"
+    stroke="#FFFFFF"
+    stroke-width="32"
+    stroke-linejoin="round"
+    stroke-linecap="round"
+  />
+
+  <!-- Inner Pink Mascot Body -->
+  <path
+    d="M 256 54
+       L 198 142
+       L 124 96
+       C 112 145 102 195 106 236
+       C 107 245 110 252 112 256
+       C 94 280 82 312 82 344
+       C 82 416 160 464 256 464
+       C 352 464 430 416 430 344
+       C 430 312 418 280 400 256
+       C 402 252 405 245 406 236
+       C 410 195 400 145 388 96
+       L 314 142
+       Z"
+    fill="#DC2865"
+  />
+
+  <!-- White Oval Eyes -->
+  <ellipse cx="206" cy="318" rx="21" ry="52" fill="#FFFFFF" />
+  <ellipse cx="306" cy="318" rx="21" ry="52" fill="#FFFFFF" />
+</svg>

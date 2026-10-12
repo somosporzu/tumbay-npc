@@ -11,7 +11,8 @@ import {
   Copy,
   RefreshCw,
   Layers,
-  Sparkles
+  Sparkles,
+  FileSpreadsheet
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -20,13 +21,15 @@ interface JsonBackupModalProps {
   onClose: () => void;
   npcs: NpcData[];
   onImportNpcs: (imported: NpcData[], mode: 'merge' | 'replace') => void;
+  onOpenSpreadsheetImport?: () => void;
 }
 
 export const JsonBackupModal: React.FC<JsonBackupModalProps> = ({
   isOpen,
   onClose,
   npcs,
-  onImportNpcs
+  onImportNpcs,
+  onOpenSpreadsheetImport
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [importMode, setImportMode] = useState<'merge' | 'replace'>('merge');
@@ -199,14 +202,30 @@ export const JsonBackupModal: React.FC<JsonBackupModalProps> = ({
 
           {/* Section 2: Import NPCs from JSON */}
           <div className="p-4 bg-[#FAF3E2] rounded-xl border border-[#DECDB3] space-y-3.5">
-            <div>
-              <h3 className="font-heading text-sm font-bold text-[#3B2C1D] flex items-center gap-1.5">
-                <Upload className="w-4 h-4 text-[#7C5A37]" />
-                2. Importar NPCs desde Archivo JSON
-              </h3>
-              <p className="text-xs text-[#6B5742] font-serif mt-0.5">
-                Selecciona un archivo <code>.json</code> previamente guardado para restaurar o añadir adversarios a tu biblioteca.
-              </p>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <h3 className="font-heading text-sm font-bold text-[#3B2C1D] flex items-center gap-1.5">
+                  <Upload className="w-4 h-4 text-[#7C5A37]" />
+                  2. Importar NPCs desde Archivo JSON
+                </h3>
+                <p className="text-xs text-[#6B5742] font-serif mt-0.5">
+                  Selecciona un archivo <code>.json</code> previamente guardado para restaurar o añadir adversarios a tu biblioteca.
+                </p>
+              </div>
+
+              {onOpenSpreadsheetImport && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onOpenSpreadsheetImport();
+                  }}
+                  className="px-2.5 py-1.5 bg-[#FAF6EE] hover:bg-[#EAE0CA] border border-[#2E6B48]/40 text-[#245B38] text-[11px] font-bold rounded-lg transition-colors flex items-center gap-1 cursor-pointer shrink-0"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-[#2E6B48]" />
+                  <span>¿Tienes Excel / CSV?</span>
+                </button>
+              )}
             </div>
 
             {/* File selector input */}

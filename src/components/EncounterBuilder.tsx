@@ -583,7 +583,7 @@ export const EncounterBuilder: React.FC<EncounterBuilderProps> = ({
                         </span>
                       </div>
                       <div className="text-[10px] text-[#705C46] mt-0.5">
-                        {npc.rank} • ND {stats.finalBarriers.join('/')} • Aptitud +{stats.finalAptitude}
+                        {npc.rank} • ND {stats.finalBarriers.join('/')} • Aptitud {stats.finalAptitude}
                       </div>
                     </div>
                     <span className="shrink-0 p-1 bg-[#EBE0C9] group-hover:bg-[#7C5A37] group-hover:text-white rounded-md text-[#5E4832] transition-colors">
@@ -808,12 +808,12 @@ export const EncounterBuilder: React.FC<EncounterBuilderProps> = ({
                           <span>
                             <strong>Aptitud Efectiva:</strong>{' '}
                             <span className="font-bold text-[#2A2016]">
-                              +{effectiveAptitude}
+                              {effectiveAptitude}
                             </span>
                             {entry.freeNdBonus > 0 && (
-                              <span className="text-[10px] text-[#7A6145] ml-1">
-                                (+{stats.finalAptitude} base +{entry.freeNdBonus} ND libre)
-                              </span>
+                               <span className="text-[10px] text-[#7A6145] ml-1">
+                                 ({stats.finalAptitude} base +{entry.freeNdBonus} ND libre)
+                               </span>
                             )}
                           </span>
                           {entry.unitType === 'cuadrilla' ? (
@@ -915,16 +915,17 @@ export const EncounterBuilder: React.FC<EncounterBuilderProps> = ({
                 className="flex-1 min-w-[200px] bg-[#FAF6EE] border border-[#CBB895] rounded-lg px-2.5 py-2 text-xs font-bold text-[#2A2117]"
               >
                 <option value="">Seleccionar Unidad para Tirar...</option>
-                {roster.map((r) => (
-                  <option key={r.instanceId} value={r.instanceId}>
-                    {r.customName} (Aptitud +
-                    {(availableNpcs.find((n) => n.id === r.npcId)
-                      ? calculateNpcStats(availableNpcs.find((n) => n.id === r.npcId)!)
-                          .finalAptitude + r.freeNdBonus
-                      : 0)}
-                    )
-                  </option>
-                ))}
+                {roster.map((r) => {
+                  const unitApt = availableNpcs.find((n) => n.id === r.npcId)
+                    ? calculateNpcStats(availableNpcs.find((n) => n.id === r.npcId)!)
+                        .finalAptitude + r.freeNdBonus
+                    : 0;
+                  return (
+                    <option key={r.instanceId} value={r.instanceId}>
+                      {r.customName} (Aptitud {unitApt})
+                    </option>
+                  );
+                })}
               </select>
 
               <button

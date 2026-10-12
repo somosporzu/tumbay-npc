@@ -76,35 +76,35 @@ export const QuickRulesModal: React.FC<QuickRulesModalProps> = ({ isOpen, onClos
               <div className="p-2 bg-[#FAF7F0] border border-[#CDBAA0] rounded-lg">
                 <strong className="block text-[#7C5A37]">Pandilla (6)</strong>
                 1 Barrera (ND base 6)<br />
-                Aptitud base +1 • Actuar 1<br />
+                Aptitud base 1 • Actuar 1<br />
                 <span className="text-[10px] text-[#8C6D44] font-semibold">Amenaza base: 0</span><br />
                 <span className="text-[9.5px] text-[#69543E]">Típico: 6 iguales (Lobos, ratas)</span>
               </div>
               <div className="p-2 bg-[#FAF7F0] border border-[#CDBAA0] rounded-lg">
                 <strong className="block text-[#6B4E2B]">Cuadrilla (4)</strong>
                 2 Barreras (ND 8 / 9)<br />
-                Aptitud base +4 • Actuar 1<br />
+                Aptitud base 3 • Actuar 1<br />
                 <span className="text-[10px] text-[#8C6D44] font-semibold">Amenaza base: 2</span><br />
                 <span className="text-[9.5px] text-[#69543E]">Típico: 4 combatientes</span>
               </div>
               <div className="p-2 bg-[#FAF7F0] border border-[#CDBAA0] rounded-lg">
                 <strong className="block text-[#5B4F35]">Trío (3)</strong>
                 2 Barreras (ND 8 / 9)<br />
-                Aptitud base +4 • Actuar 2<br />
+                Aptitud base 4 • Actuar 2<br />
                 <span className="text-[10px] text-[#8C6D44] font-semibold">Amenaza base: 3</span><br />
                 <span className="text-[9.5px] text-[#69543E]">Típico: 3 mercenarios</span>
               </div>
               <div className="p-2 bg-[#FAF7F0] border border-[#CDBAA0] rounded-lg">
                 <strong className="block text-[#4A5D3E]">Dúo (2)</strong>
                 3 Barreras (ND 10 / 11 / 12)<br />
-                Aptitud base +7 • Actuar 2<br />
+                Aptitud base 7 • Actuar 2<br />
                 <span className="text-[10px] text-[#8C6D44] font-semibold">Amenaza base: 5</span><br />
                 <span className="text-[9.5px] text-[#69543E]">Típico: 2 monstruos u ogros</span>
               </div>
               <div className="p-2 bg-[#FAF7F0] border border-[#CDBAA0] rounded-lg">
                 <strong className="block text-[#8A2B1D]">Solo (1)</strong>
                 4 Barreras (ND 13 / 14 / 15 / 16)<br />
-                Aptitud base +9 • Actuar 3<br />
+                Aptitud base 9 • Actuar 3<br />
                 <span className="text-[10px] text-[#8C6D44] font-semibold">Amenaza base: 7</span><br />
                 <span className="text-[9.5px] text-[#69543E]">Típico: 1 coloso o dragón</span>
               </div>
@@ -112,13 +112,13 @@ export const QuickRulesModal: React.FC<QuickRulesModalProps> = ({ isOpen, onClos
 
             <div className="p-2.5 bg-[#F5EEDC] rounded-lg border border-[#DAC9A8] space-y-1 text-[11px] text-[#55402A]">
               <p className="font-bold text-[#3B2B1B]">
-                Fórmulas de Escala v0.4:
+                Fórmulas de Escala:
               </p>
-              <p>• <strong>Amenaza efectiva</strong> = Amenaza del NPC - costos de ventajas + valor de desventajas</p>
-              <p>• <strong>ND de cada Barrera</strong> = ND base + (Amenaza efectiva - Amenaza base del Rango)</p>
-              <p>• <strong>Aptitud</strong> = Aptitud base + (Amenaza efectiva - Amenaza base del Rango)</p>
+              <p>• <strong>Amenaza efectiva</strong> = Amenaza base elegida + desventajas (los rasgos normales no se suman a la Amenaza)</p>
+              <p>• <strong>ND de cada Barrera</strong> = ND del Rango + (Amenaza efectiva - Amenaza base del Rango)</p>
+              <p>• <strong>Aptitud</strong> = Aptitud del Rango + (Amenaza efectiva - Amenaza base del Rango)</p>
               <p className="text-[10px] text-[#7A5B35] italic">
-                * Regla de oro: La Amenaza efectiva nunca debería bajar de la Amenaza base del Rango (o de 0).
+                * Regla de oro: La Amenaza nunca debería bajar de la base del Rango (o de 0), ni superar el límite máximo de 11.
               </p>
             </div>
           </div>

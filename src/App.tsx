@@ -8,6 +8,8 @@ import { DesignSheet } from './components/DesignSheet';
 import { EncounterBuilder } from './components/EncounterBuilder';
 import { QuickRulesModal } from './components/QuickRulesModal';
 import { JsonBackupModal } from './components/JsonBackupModal';
+import { SpreadsheetImportModal } from './components/SpreadsheetImportModal';
+import { PorzuuLogo } from './components/PorzuuLogo';
 import {
   Sparkles,
   Layers,
@@ -56,6 +58,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('card');
   const [showRulesModal, setShowRulesModal] = useState<boolean>(false);
   const [showBackupModal, setShowBackupModal] = useState<boolean>(false);
+  const [showSpreadsheetModal, setShowSpreadsheetModal] = useState<boolean>(false);
 
   // Sync to local storage
   useEffect(() => {
@@ -173,8 +176,8 @@ export default function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
           {/* Logo & System Brand */}
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#7C5A37] flex items-center justify-center text-[#FAF6EE] font-heading font-black text-lg shadow-xs border border-[#5C4023]">
-              PT
+            <div className="w-10 h-10 flex items-center justify-center shrink-0 drop-shadow-xs transition-transform hover:scale-105" title="Logo">
+              <PorzuuLogo className="w-full h-full object-contain" />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -244,8 +247,17 @@ export default function App() {
             </button>
           </div>
 
-          {/* Quick Actions: Rules, JSON Backup & New NPC */}
+          {/* Quick Actions: Rules, Spreadsheet, JSON Backup & New NPC */}
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowSpreadsheetModal(true)}
+              className="p-1.5 sm:px-2.5 sm:py-1.5 bg-[#FAF6EE] hover:bg-[#EAF3E6] text-[#205735] text-xs font-bold rounded-lg border border-[#A7CCA8] flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+              title="Importar hoja de cálculo con datos de NPCs (Excel, CSV o copiar y pegar de Google Sheets)"
+            >
+              <FileSpreadsheet className="w-4 h-4 text-[#2E6B48]" />
+              <span className="hidden sm:inline">Hoja de Cálculo</span>
+            </button>
+
             <button
               onClick={() => setShowBackupModal(true)}
               className="p-1.5 sm:px-2.5 sm:py-1.5 bg-[#FAF6EE] hover:bg-[#EFE6D2] text-[#544230] text-xs font-semibold rounded-lg border border-[#CBB895] flex items-center gap-1.5 transition-all cursor-pointer"
@@ -313,6 +325,15 @@ export default function App() {
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => setShowSpreadsheetModal(true)}
+                className="text-[11px] text-[#245D3B] hover:text-[#184428] font-semibold flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#FAF6EE] hover:bg-[#EAF3E6] border border-[#A7CCA8] shadow-2xs transition-colors cursor-pointer"
+                title="Importar una hoja de cálculo con varias criaturas"
+              >
+                <FileSpreadsheet className="w-3.5 h-3.5 text-[#2E6B48]" />
+                <span className="hidden md:inline">Importar Hoja</span>
+              </button>
+
               <button
                 onClick={handleDuplicateCurrentNpc}
                 className="text-[11px] text-[#423220] hover:text-[#261C12] font-semibold flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#FAF6EE] hover:bg-[#EAE0CA] border border-[#D5C4A4] shadow-2xs transition-colors cursor-pointer"
@@ -419,6 +440,15 @@ export default function App() {
       <JsonBackupModal
         isOpen={showBackupModal}
         onClose={() => setShowBackupModal(false)}
+        npcs={npcList}
+        onImportNpcs={handleImportNpcs}
+        onOpenSpreadsheetImport={() => setShowSpreadsheetModal(true)}
+      />
+
+      {/* Spreadsheet Import (Excel / CSV / Google Sheets) Modal */}
+      <SpreadsheetImportModal
+        isOpen={showSpreadsheetModal}
+        onClose={() => setShowSpreadsheetModal(false)}
         npcs={npcList}
         onImportNpcs={handleImportNpcs}
       />

@@ -118,7 +118,7 @@ export function parseAndValidateNpcsJson(jsonString: string): {
         unitFormation: item.unitFormation === 'Cuadrilla' || item.unitFormation === 'Solitario'
           ? item.unitFormation
           : (rank === 'Pandilla' || rank === 'Cuadrilla' ? 'Cuadrilla' : 'Solitario'),
-        targetNA: typeof item.targetNA === 'number' && !isNaN(item.targetNA) ? Math.max(0, item.targetNA) : 3,
+        targetNA: typeof item.targetNA === 'number' && !isNaN(item.targetNA) ? Math.min(11, Math.max(0, item.targetNA)) : 3,
         selectedTraits: Array.isArray(item.selectedTraits)
           ? item.selectedTraits.filter((t: any) => t && typeof t === 'object' && t.name)
           : [],
