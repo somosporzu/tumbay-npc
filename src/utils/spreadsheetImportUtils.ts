@@ -539,7 +539,7 @@ export const SAMPLE_SPREADSHEET_NPCS = [
     Amenaza: 2,
     'Concepto Principal': 'Espadachín forajido',
     'Conceptos Secundarios': 'Tácticas de emboscada',
-    Rasgos: 'Certero',
+    Rasgos: 'Certero, Bomba de Humo: Permite replegarse sin sufrir ataques de oportunidad',
     Comportamiento: 'Cobarde',
     'Táctica de Combate': 'Busca el flanco y huye si derriban a su camarada.',
     Cita: '¡El oro o el pescuezo, viajero!'
@@ -583,7 +583,7 @@ export const SAMPLE_SPREADSHEET_NPCS = [
     Amenaza: 5,
     'Concepto Principal': 'Fuerza descomunal',
     'Conceptos Secundarios': 'Maza de roble, Piel correosa',
-    Rasgos: 'Golpe de área, Piel dura',
+    Rasgos: 'Golpe de área, Piel dura, Hambre Voraz (Costo 2): Recupera 1 Barrera al devorar a un enemigo caído',
     Comportamiento: 'Bestia',
     'Táctica de Combate': 'Arremete contra varios a la vez derribando obstáculos.',
     Cita: '¡Huesos crujen, carne tierna!'
@@ -627,7 +627,7 @@ export const SAMPLE_SPREADSHEET_NPCS = [
     Amenaza: 9,
     'Concepto Principal': 'Sierpe alada voraz',
     'Conceptos Secundarios': 'Aliento ardiente, Garras de basalto, Vuelo rasante',
-    Rasgos: 'Golpe de área, Aterrador, Volador / Trepador / Nadador',
+    Rasgos: 'Golpe de área, Aterrador, Volador / Trepador / Nadador, Aliento de Ceniza: Exhala una nube sofocante que ciega a los objetivos por 1 turno',
     Comportamiento: 'Depredador',
     'Táctica de Combate': 'Desciende en picada, envuelve la zona en fuego y alza el vuelo.',
     Cita: 'La ceniza cae donde su sombra se posa.'
@@ -789,6 +789,50 @@ export function downloadExcelTemplate(): void {
   const wsGuide = XLSX.utils.json_to_sheet(guideData);
   wsGuide['!cols'] = [{ wch: 22 }, { wch: 65 }, { wch: 35 }];
   XLSX.utils.book_append_sheet(wb, wsGuide, 'Guía de Columnas');
+
+  // Sheet 3: Dedicated Guide for Custom Traits
+  const customTraitsGuide = [
+    {
+      Formato: 'Nombre y Efecto (Recomendado)',
+      Sintaxis: 'Nombre: Descripción de la habilidad',
+      Ejemplo: 'Aliento de Ceniza: Exhala una nube de brasas que ciega a los objetivos por 1 turno.',
+      Notas: 'Usa dos puntos (:) para separar el título de su efecto. Aparece en la carta coleccionable.'
+    },
+    {
+      Formato: 'Con Costo de Amenaza',
+      Sintaxis: 'Nombre (Costo X): Descripción',
+      Ejemplo: 'Hambre Voraz (Costo 2): Recupera 1 Barrera al devorar a un enemigo caído.',
+      Notas: 'Permite calibrar el costo en NA (por defecto las ventajas tienen costo 1).'
+    },
+    {
+      Formato: 'Rasgo Menor (Costo 0)',
+      Sintaxis: 'Nombre (menor): Descripción',
+      Ejemplo: 'Ojos de Gato (menor): Ve perfectamente en oscuridad absoluta sin penalizador.',
+      Notas: 'No altera la Amenaza ni las barreras numéricas.'
+    },
+    {
+      Formato: 'Desventaja Personalizada',
+      Sintaxis: 'Nombre (desventaja): Descripción',
+      Ejemplo: 'Temor al Fuego (desventaja): Si sufre daño ígneo pierde su siguiente acción.',
+      Notas: 'Suma a la Amenaza (NA) como desventaja.'
+    },
+    {
+      Formato: 'Solo Nombre',
+      Sintaxis: 'Nombre del rasgo',
+      Ejemplo: 'Garras Venenosas',
+      Notas: 'Crea el rasgo con un texto por defecto que puedes editar en la app.'
+    },
+    {
+      Formato: 'Combinar Múltiples Rasgos',
+      Sintaxis: 'Rasgo 1, Rasgo 2: Efecto, Rasgo 3 x2',
+      Ejemplo: 'Veloz, Certero x2, Piel dura, Bomba de Humo: Permite huir sin recibir daño.',
+      Notas: 'Separa cada rasgo con coma (,) o punto y coma (;). Puedes mezclar rasgos oficiales y personalizados.'
+    }
+  ];
+
+  const wsCustom = XLSX.utils.json_to_sheet(customTraitsGuide);
+  wsCustom['!cols'] = [{ wch: 30 }, { wch: 38 }, { wch: 65 }, { wch: 45 }];
+  XLSX.utils.book_append_sheet(wb, wsCustom, 'Rasgos Personalizados');
 
   XLSX.writeFile(wb, 'plantilla_npcs_papa_tumbay.xlsx');
 }

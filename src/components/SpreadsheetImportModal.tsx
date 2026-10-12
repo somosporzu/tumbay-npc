@@ -504,6 +504,58 @@ export const SpreadsheetImportModal: React.FC<SpreadsheetImportModalProps> = ({
                     </div>
                   </div>
 
+                  {/* Detailed Guide for Custom Traits */}
+                  <div className="p-4 bg-[#FAF3E2] rounded-xl border border-[#D5C29F] space-y-2.5">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-[#2A2016]">
+                      <Sparkles className="w-4 h-4 text-[#B87A2B]" />
+                      <span>¿Cómo escribir Rasgos Personalizados en la hoja de cálculo?</span>
+                    </div>
+                    <p className="text-[11px] text-[#63513E] font-serif leading-relaxed">
+                      La plantilla Excel descargable incluye una pestaña completa con esta guía. Puedes escribir cualquier habilidad que inventes:
+                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                      <div className="p-2.5 bg-[#FAF6EE] rounded-lg border border-[#DAC8A8]">
+                        <span className="font-bold text-[#245D3B] block mb-0.5">1. Nombre y Efecto (Recomendado):</span>
+                        <code className="text-[10.5px] bg-[#EFE7D5] px-1.5 py-0.5 rounded text-[#332517] block font-mono">
+                          Aliento de Ceniza: Ciega a los héroes 1 turno
+                        </code>
+                        <span className="text-[10px] text-[#705C46] mt-0.5 block font-serif">
+                          Usa dos puntos (<code>:</code>) para que la carta muestre la descripción completa.
+                        </span>
+                      </div>
+
+                      <div className="p-2.5 bg-[#FAF6EE] rounded-lg border border-[#DAC8A8]">
+                        <span className="font-bold text-[#245D3B] block mb-0.5">2. Con Costo de Amenaza:</span>
+                        <code className="text-[10.5px] bg-[#EFE7D5] px-1.5 py-0.5 rounded text-[#332517] block font-mono">
+                          Hambre Voraz (Costo 2): Recupera 1 Barrera al morder
+                        </code>
+                        <span className="text-[10px] text-[#705C46] mt-0.5 block font-serif">
+                          Ajusta el costo matemático del rasgo en el cálculo de NA.
+                        </span>
+                      </div>
+
+                      <div className="p-2.5 bg-[#FAF6EE] rounded-lg border border-[#DAC8A8]">
+                        <span className="font-bold text-[#245D3B] block mb-0.5">3. Desventaja Personalizada:</span>
+                        <code className="text-[10.5px] bg-[#EFE7D5] px-1.5 py-0.5 rounded text-[#332517] block font-mono">
+                          Temor al Fuego (desventaja): Pierde acción si sufre fuego
+                        </code>
+                        <span className="text-[10px] text-[#705C46] mt-0.5 block font-serif">
+                          Cuenta como desventaja (+NA a la criatura).
+                        </span>
+                      </div>
+
+                      <div className="p-2.5 bg-[#FAF6EE] rounded-lg border border-[#DAC8A8]">
+                        <span className="font-bold text-[#245D3B] block mb-0.5">4. Combinar varios en la misma celda:</span>
+                        <code className="text-[10.5px] bg-[#EFE7D5] px-1.5 py-0.5 rounded text-[#332517] block font-mono truncate">
+                          Veloz, Certero x2, Bomba de Humo: Permite huir
+                        </code>
+                        <span className="text-[10px] text-[#705C46] mt-0.5 block font-serif">
+                          Separa cada rasgo con comas (<code>,</code>). Mezcla oficiales y propios.
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Summary of accepted column names */}
                   <div className="p-3 bg-[#EFE8D6] rounded-xl border border-[#D5C4A7] text-[11px] text-[#544230] space-y-1">
                     <span className="font-bold block text-[#36291C]">Columnas reconocidas automáticamente:</span>
