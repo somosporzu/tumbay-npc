@@ -304,7 +304,7 @@ export const CardVisual: React.FC<CardVisualProps> = ({
       <div className="relative z-20 flex items-start justify-between">
         {/* Top-Left Column: Big NA circle + Formation Pill + Barrier Shields */}
         <div className="flex flex-col items-center">
-          {/* Big Circular Medallion with NA */}
+          {/* Big Circular Medallion with NA (Amenaza de la criatura) */}
           <div
             className={`w-14 h-14 rounded-full shadow-xl flex items-center justify-center relative border-2 transition-colors ${
               isEffectiveInkSaver ? 'bg-white border-2 border-black' : 'backdrop-blur-md'
@@ -313,13 +313,18 @@ export const CardVisual: React.FC<CardVisualProps> = ({
               backgroundColor: isEffectiveInkSaver ? '#FFFFFF' : theme.medallionBg,
               borderColor: isEffectiveInkSaver ? '#000000' : theme.medallionBorder
             }}
+            title={`Amenaza de la criatura (NA): ${stats.targetNA}${
+              stats.effectiveThreat !== stats.targetNA
+                ? ` (Amenaza efectiva calculada: ${stats.effectiveThreat})`
+                : ''
+            }`}
           >
             <span
               className={`font-heading text-[32px] font-black leading-none drop-shadow-md select-none ${
                 isEffectiveInkSaver ? 'text-black font-black' : 'text-white'
               }`}
             >
-              {stats.resultNA}
+              {stats.targetNA}
             </span>
             <span
               className={`absolute bottom-1 text-[6.5px] font-black uppercase tracking-widest leading-none select-none ${

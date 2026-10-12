@@ -76,7 +76,7 @@ export interface CalculatedNpcStats {
   traitsValueSum: number; // suma de valores de desventajas (suman a la amenaza efectiva)
   traitsDisadvantageSum: number; // alias para suma de desventajas
   netTraitModifier: number; // modificador neto (- costos + desventajas)
-  resultNA: number; // alias para effectiveThreat (visible en la carta)
+  resultNA: number; // Amenaza de la criatura mostrada en la carta coleccionable (alias de targetNA)
   baseBarriers: number[];
   finalBarriers: number[];
   baseAptitude: number;

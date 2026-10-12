@@ -209,7 +209,7 @@ export function calculateNpcStats(npc: NpcData): CalculatedNpcStats {
     traitsValueSum,
     traitsDisadvantageSum,
     netTraitModifier,
-    resultNA: effectiveThreat,
+    resultNA: npc.targetNA,
     baseBarriers: baseStats.barriers,
     finalBarriers,
     baseAptitude: baseStats.aptitude,

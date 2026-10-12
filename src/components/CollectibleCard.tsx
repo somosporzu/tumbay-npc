@@ -382,7 +382,7 @@ export const CollectibleCard: React.FC<CollectibleCardProps> = ({
               )}
             </h2>
             <p className="text-[11px] text-[#705E4A] font-serif">
-              {npc.name} • NA {stats.resultNA} • Aptitud +{stats.finalAptitude} • {stats.finalBarriers.length} Barreras
+              {npc.name} • NA {stats.targetNA} • Aptitud +{stats.finalAptitude} • {stats.finalBarriers.length} Barreras
               {npc.behaviorDescription ? ` • ${npc.behaviorType}: ${npc.behaviorDescription}` : ''}
             </p>
           </div>
