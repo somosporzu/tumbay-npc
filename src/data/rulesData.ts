@@ -19,62 +19,62 @@ export const RANK_BASE_STATS: Record<
   Pandilla: {
     npcCount: 6,
     barriers: [6],
-    aptitude: 1,
+    aptitude: -2,
     actions: 1,
     amenazaBase: 0,
     typicalCount: '6 criaturas',
     maxRecommendedTraits: 1,
     recommendedSecondaryConcepts: 'Principal, más uno secundario como máximo',
     examples: 'Lobos, ratas gigantes, goblins',
-    description: 'Grupo de 6 enemigos básicos. 1 barrera (ND 6) y 1 acción cada uno.'
+    description: 'Grupo de 6 enemigos básicos. 1 barrera (ND 6), Aptitud -2 y 1 acción cada uno.'
   },
   Cuadrilla: {
     npcCount: 4,
     barriers: [8, 9],
-    aptitude: 3,
+    aptitude: 0,
     actions: 1,
     amenazaBase: 2,
     typicalCount: '4 criaturas',
     maxRecommendedTraits: 1,
     recommendedSecondaryConcepts: 'Principal, más uno o dos secundarios',
     examples: 'Bandidos, guardias, cultistas',
-    description: 'Grupo de 4 combatientes estándar. 2 barreras (ND 8/9) y 1 acción cada uno.'
+    description: 'Grupo de 4 combatientes estándar. 2 barreras (ND 8/9), Aptitud 0 y 1 acción cada uno.'
   },
   Trío: {
     npcCount: 3,
     barriers: [8, 9],
-    aptitude: 4,
+    aptitude: 1,
     actions: 2,
     amenazaBase: 3,
     typicalCount: '3 criaturas',
     maxRecommendedTraits: 2,
     recommendedSecondaryConcepts: 'Principal, más dos secundarios',
     examples: 'Mercenarios, aquelarre de brujas',
-    description: 'Grupo de 3 enemigos peligrosos. 2 barreras (ND 8/9) y 2 acciones cada uno.'
+    description: 'Grupo de 3 enemigos peligrosos. 2 barreras (ND 8/9), Aptitud +1 y 2 acciones cada uno.'
   },
   Dúo: {
     npcCount: 2,
     barriers: [10, 11, 12],
-    aptitude: 7,
+    aptitude: 3,
     actions: 2,
     amenazaBase: 5,
     typicalCount: '2 criaturas',
     maxRecommendedTraits: 2,
     recommendedSecondaryConcepts: 'Principal, más dos secundarios',
     examples: 'Ogros, campeones',
-    description: 'Pareja de monstruos temibles o campeones. 3 barreras (ND 10/11/12) y 2 acciones cada uno.'
+    description: 'Pareja de monstruos temibles o campeones. 3 barreras (ND 10/11/12), Aptitud +3 y 2 acciones cada uno.'
   },
   Solo: {
     npcCount: 1,
     barriers: [13, 14, 15, 16],
-    aptitude: 9,
+    aptitude: 5,
     actions: 3,
     amenazaBase: 7,
     typicalCount: '1 criatura',
     maxRecommendedTraits: 3,
     recommendedSecondaryConcepts: 'Principal, más tres secundarios',
     examples: 'Dragón joven, señor de la guerra',
-    description: 'Criatura solitaria o coloso. 4 barreras (ND 13/14/15/16) y 3 acciones por turno.'
+    description: 'Criatura solitaria o coloso. 4 barreras (ND 13/14/15/16), Aptitud +5 y 3 acciones por turno.'
   }
 };
 

@@ -833,7 +833,7 @@ export const NpcEditor: React.FC<NpcEditorProps> = ({
                       <strong>Barreras:</strong> {base.barriers.length} (ND {base.barriers.join('/')})
                     </div>
                     <div>
-                      <strong>Aptitud:</strong> {base.aptitude} | <strong>Actuar:</strong> {base.actions}
+                      <strong>Aptitud:</strong> {base.aptitude >= 0 ? `+${base.aptitude}` : base.aptitude} | <strong>Actuar:</strong> {base.actions}
                     </div>
                     <div className="text-[9.5px] text-[#8C6D44] font-semibold">
                       Amenaza: {base.amenazaBase} • {base.typicalCount}
