@@ -7,6 +7,7 @@ interface CardBackVisualProps {
   isInkSaver?: boolean;
   className?: string;
   style?: React.CSSProperties;
+  noRounded?: boolean;
 }
 
 export const CardBackVisual: React.FC<CardBackVisualProps> = ({
@@ -14,7 +15,8 @@ export const CardBackVisual: React.FC<CardBackVisualProps> = ({
   frameTheme = 'pergamino',
   isInkSaver = false,
   className = '',
-  style
+  style,
+  noRounded = false
 }) => {
   const isTinta = isInkSaver || frameTheme === 'tinta';
 
@@ -22,7 +24,9 @@ export const CardBackVisual: React.FC<CardBackVisualProps> = ({
     <div
       ref={cardRef}
       id="papa-tumbay-card-back"
-      className={`papa-tumbay-card w-[375px] h-[525px] rounded-[22px] p-5 shadow-xl flex flex-col items-center justify-between select-none relative overflow-hidden shrink-0 ${
+      className={`papa-tumbay-card w-[375px] h-[525px] ${
+        noRounded ? 'rounded-none' : 'rounded-[22px]'
+      } p-5 shadow-xl flex flex-col items-center justify-between select-none relative overflow-hidden shrink-0 ${
         isTinta ? 'bg-white text-zinc-950 border-2 border-black' : 'bg-[#141A17] text-[#FAF6EE]'
       } ${className}`}
       style={style}
@@ -50,12 +54,12 @@ export const CardBackVisual: React.FC<CardBackVisualProps> = ({
 
       {/* Triple Inner Border */}
       <div
-        className={`absolute inset-2.5 rounded-[18px] border-2 pointer-events-none ${
+        className={`absolute inset-2.5 ${noRounded ? 'rounded-none' : 'rounded-[18px]'} border-2 pointer-events-none ${
           isTinta ? 'border-black' : 'border-[#C58E3C]/60'
         }`}
       />
       <div
-        className={`absolute inset-4 rounded-[14px] border pointer-events-none ${
+        className={`absolute inset-4 ${noRounded ? 'rounded-none' : 'rounded-[14px]'} border pointer-events-none ${
           isTinta ? 'border-black/50 border-dashed' : 'border-[#C58E3C]/30'
         }`}
       />

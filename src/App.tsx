@@ -9,6 +9,8 @@ import { EncounterBuilder } from './components/EncounterBuilder';
 import { QuickRulesModal } from './components/QuickRulesModal';
 import { JsonBackupModal } from './components/JsonBackupModal';
 import { SpreadsheetImportModal } from './components/SpreadsheetImportModal';
+import { PrintSheetModal } from './components/PrintSheetModal';
+import { ZipExportModal } from './components/ZipExportModal';
 import { PorzuuLogo } from './components/PorzuuLogo';
 import {
   Sparkles,
@@ -22,7 +24,8 @@ import {
   Bookmark,
   Printer,
   FileJson,
-  Copy
+  Copy,
+  FileArchive
 } from 'lucide-react';
 
 type ActiveTab = 'editor' | 'card' | 'designSheet' | 'encounters';
@@ -59,6 +62,8 @@ export default function App() {
   const [showRulesModal, setShowRulesModal] = useState<boolean>(false);
   const [showBackupModal, setShowBackupModal] = useState<boolean>(false);
   const [showSpreadsheetModal, setShowSpreadsheetModal] = useState<boolean>(false);
+  const [showZipModal, setShowZipModal] = useState<boolean>(false);
+  const [showPrintSheetModal, setShowPrintSheetModal] = useState<boolean>(false);
 
   // Sync to local storage
   useEffect(() => {
@@ -247,15 +252,33 @@ export default function App() {
             </button>
           </div>
 
-          {/* Quick Actions: Rules, Spreadsheet, JSON Backup & New NPC */}
-          <div className="flex items-center gap-2">
+          {/* Quick Actions: Rules, Spreadsheet, Print 8 Cards, ZIP Export, JSON Backup & New NPC */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <button
+              onClick={() => setShowPrintSheetModal(true)}
+              className="p-1.5 sm:px-2.5 sm:py-1.5 bg-[#543D28] hover:bg-[#432F1E] text-white text-xs font-bold rounded-lg shadow-2xs flex items-center gap-1.5 transition-all cursor-pointer"
+              title="Armar e imprimir planillas de 8 cartas automáticas para papel Oficio o Carta con sangrado y guías de corte"
+            >
+              <Layers className="w-4 h-4 text-[#EFE5D2]" />
+              <span className="hidden sm:inline">Planilla 8 Cartas</span>
+            </button>
+
+            <button
+              onClick={() => setShowZipModal(true)}
+              className="p-1.5 sm:px-2.5 sm:py-1.5 bg-[#FAF6EE] hover:bg-[#EAF3E6] text-[#205735] text-xs font-bold rounded-lg border border-[#A7CCA8] flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
+              title="Exportar todas las cartas en formato PNG alta resolución juntas en un archivo ZIP"
+            >
+              <FileArchive className="w-4 h-4 text-[#2E6B48]" />
+              <span className="hidden sm:inline">Exportar ZIP</span>
+            </button>
+
             <button
               onClick={() => setShowSpreadsheetModal(true)}
               className="p-1.5 sm:px-2.5 sm:py-1.5 bg-[#FAF6EE] hover:bg-[#EAF3E6] text-[#205735] text-xs font-bold rounded-lg border border-[#A7CCA8] flex items-center gap-1.5 transition-all cursor-pointer shadow-2xs"
               title="Importar hoja de cálculo con datos de NPCs (Excel, CSV o copiar y pegar de Google Sheets)"
             >
               <FileSpreadsheet className="w-4 h-4 text-[#2E6B48]" />
-              <span className="hidden sm:inline">Hoja de Cálculo</span>
+              <span className="hidden md:inline">Hoja de Cálculo</span>
             </button>
 
             <button
@@ -264,7 +287,7 @@ export default function App() {
               title="Exportar o importar tus NPCs en formato JSON local"
             >
               <FileJson className="w-4 h-4 text-[#7C5A37]" />
-              <span className="hidden sm:inline">JSON</span>
+              <span className="hidden lg:inline">JSON</span>
             </button>
 
             <button
@@ -273,7 +296,7 @@ export default function App() {
               title="Consultar manual de reglas rápidas"
             >
               <BookOpen className="w-4 h-4 text-[#7C5A37]" />
-              <span className="hidden sm:inline">Reglas Rápidas</span>
+              <span className="hidden lg:inline">Reglas Rápidas</span>
             </button>
 
             <button
@@ -324,7 +347,25 @@ export default function App() {
               </span>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-1.5 shrink-0">
+              <button
+                onClick={() => setShowPrintSheetModal(true)}
+                className="text-[11px] text-[#4E3923] hover:text-[#2E1F12] font-semibold flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#FAF6EE] hover:bg-[#EAE0CA] border border-[#D5C4A4] shadow-2xs transition-colors cursor-pointer"
+                title="Armar e imprimir planillas automáticas de 8 cartas para Oficio o Carta"
+              >
+                <Layers className="w-3.5 h-3.5 text-[#7C5A37]" />
+                <span className="hidden sm:inline">Planilla 8 Cartas</span>
+              </button>
+
+              <button
+                onClick={() => setShowZipModal(true)}
+                className="text-[11px] text-[#245D3B] hover:text-[#184428] font-semibold flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#FAF6EE] hover:bg-[#EAF3E6] border border-[#A7CCA8] shadow-2xs transition-colors cursor-pointer"
+                title="Exportar todas las cartas en formato PNG en un archivo ZIP"
+              >
+                <FileArchive className="w-3.5 h-3.5 text-[#2E6B48]" />
+                <span className="hidden sm:inline">ZIP Cartas</span>
+              </button>
+
               <button
                 onClick={() => setShowSpreadsheetModal(true)}
                 className="text-[11px] text-[#245D3B] hover:text-[#184428] font-semibold flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#FAF6EE] hover:bg-[#EAF3E6] border border-[#A7CCA8] shadow-2xs transition-colors cursor-pointer"
@@ -451,6 +492,23 @@ export default function App() {
         onClose={() => setShowSpreadsheetModal(false)}
         npcs={npcList}
         onImportNpcs={handleImportNpcs}
+      />
+
+      {/* 8-Card Print Sheet Modal (Oficio, Carta, Bleed, Cut Guides) */}
+      <PrintSheetModal
+        isOpen={showPrintSheetModal}
+        onClose={() => setShowPrintSheetModal(false)}
+        currentNpc={currentNpc}
+        availableNpcs={npcList}
+        onOpenZipExport={() => setShowZipModal(true)}
+      />
+
+      {/* ZIP Archive Export Modal (All Cards PNG in ZIP) */}
+      <ZipExportModal
+        isOpen={showZipModal}
+        onClose={() => setShowZipModal(false)}
+        npcs={npcList}
+        currentNpcId={activeNpcId}
       />
 
       {/* Footer */}

@@ -26,11 +26,13 @@ import {
   HelpCircle,
   ArrowUp,
   Pin,
-  Image as ImageIcon
+  Image as ImageIcon,
+  FileArchive
 } from 'lucide-react';
 import { getAvatarPreset, AVATAR_PRESETS } from '../data/avatars';
 import { getCoordinatedTheme, CARD_COLOR_PRESETS, FRAME_THEME_PRESETS } from '../utils/cardTheme';
 import { PrintSheetModal } from './PrintSheetModal';
+import { ZipExportModal } from './ZipExportModal';
 import { CardVisual } from './CardVisual';
 
 interface CollectibleCardProps {
@@ -67,6 +69,7 @@ export const CollectibleCard: React.FC<CollectibleCardProps> = ({
   const [showCutMarks, setShowCutMarks] = useState(false);
   const [brokenBarriers, setBrokenBarriers] = useState<number[]>([]);
   const [showPrintSheetModal, setShowPrintSheetModal] = useState(false);
+  const [showZipExportModal, setShowZipExportModal] = useState(false);
 
   // Active workbench section and view mode
   const [activeTab, setActiveTab] = useState<WorkbenchTab>('image');
@@ -1186,7 +1189,7 @@ export const CollectibleCard: React.FC<CollectibleCardProps> = ({
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2">
                 <button
                   onClick={() => handleDirectPrint()}
                   disabled={isPrinting || isExporting}
@@ -1224,11 +1227,22 @@ export const CollectibleCard: React.FC<CollectibleCardProps> = ({
                   type="button"
                   onClick={() => setShowPrintSheetModal(true)}
                   className="p-3 bg-[#543D28] hover:bg-[#432F1E] text-white rounded-xl shadow-xs flex flex-col items-center justify-center gap-1 text-center transition-all cursor-pointer active:scale-95"
-                  title="Generar e imprimir hoja con 8 cartas en formato A4 o Carta"
+                  title="Generar e imprimir planillas automáticas de 8 cartas en formato Oficio o Carta con sangrado y guías de corte"
                 >
                   <Layers className="w-4 h-4 text-[#EFE5D2]" />
-                  <span className="text-xs font-bold">Hoja 8 Cartas</span>
-                  <span className="text-[9.5px] text-[#E5D7BE] font-mono">A4 / Carta</span>
+                  <span className="text-xs font-bold">Planilla 8 Cartas</span>
+                  <span className="text-[9.5px] text-[#E5D7BE] font-mono">Oficio / Carta</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowZipExportModal(true)}
+                  className="p-3 bg-[#255C3E] hover:bg-[#1D4A32] text-white rounded-xl shadow-xs flex flex-col items-center justify-center gap-1 text-center transition-all cursor-pointer active:scale-95 col-span-2 sm:col-span-1"
+                  title="Descargar todas las cartas de tu colección en un archivo ZIP"
+                >
+                  <FileArchive className="w-4 h-4 text-[#D5F0DA]" />
+                  <span className="text-xs font-bold">Exportar Todo (.ZIP)</span>
+                  <span className="text-[9.5px] text-[#C1E7C7] font-mono">Todas en PNG</span>
                 </button>
               </div>
             </div>
@@ -1256,6 +1270,15 @@ export const CollectibleCard: React.FC<CollectibleCardProps> = ({
         onClose={() => setShowPrintSheetModal(false)}
         currentNpc={npc}
         availableNpcs={availableNpcs.length > 0 ? availableNpcs : [npc]}
+        onOpenZipExport={() => setShowZipExportModal(true)}
+      />
+
+      {/* ZIP Archive Export Modal */}
+      <ZipExportModal
+        isOpen={showZipExportModal}
+        onClose={() => setShowZipExportModal(false)}
+        npcs={availableNpcs.length > 0 ? availableNpcs : [npc]}
+        currentNpcId={npc.id}
       />
     </div>
   );

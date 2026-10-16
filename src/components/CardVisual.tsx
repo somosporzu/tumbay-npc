@@ -17,6 +17,7 @@ interface CardVisualProps {
   allowDirectPan?: boolean;
   onPanChange?: (newOffsetX: number, newOffsetY: number) => void;
   onScaleChange?: (newScale: number) => void;
+  noRounded?: boolean;
 }
 
 export const CardVisual: React.FC<CardVisualProps> = ({
@@ -31,7 +32,8 @@ export const CardVisual: React.FC<CardVisualProps> = ({
   style,
   allowDirectPan = false,
   onPanChange,
-  onScaleChange
+  onScaleChange,
+  noRounded = false
 }) => {
   const stats = propStats || calculateNpcStats(npc);
 
@@ -194,7 +196,9 @@ export const CardVisual: React.FC<CardVisualProps> = ({
     <div
       ref={cardRef}
       id="papa-tumbay-card"
-      className={`papa-tumbay-card w-[375px] h-[525px] rounded-[22px] p-4 flex flex-col justify-between select-none relative overflow-hidden shrink-0 transition-colors ${getContainerClasses()} ${className}`}
+      className={`papa-tumbay-card w-[375px] h-[525px] ${
+        noRounded ? 'rounded-none' : 'rounded-[22px]'
+      } p-4 flex flex-col justify-between select-none relative overflow-hidden shrink-0 transition-colors ${getContainerClasses()} ${className}`}
       style={{
         ...style,
         backgroundColor: isEffectiveInkSaver ? '#FFFFFF' : framePreset.cardBg
@@ -277,7 +281,7 @@ export const CardVisual: React.FC<CardVisualProps> = ({
 
       {/* Thin inner border line with frame styling */}
       <div
-        className="absolute inset-2.5 rounded-[18px] pointer-events-none z-10 transition-colors"
+        className={`absolute inset-2.5 ${noRounded ? 'rounded-none' : 'rounded-[18px]'} pointer-events-none z-10 transition-colors`}
         style={{
           border: isEffectiveInkSaver ? '1.5px solid #000000' : `1.5px solid ${framePreset.innerBorderColor}`
         }}

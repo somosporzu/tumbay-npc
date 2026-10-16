@@ -14,7 +14,7 @@ interface RenderOptions {
  * Uses html-to-image with skipFonts: true and fontEmbedCSS: '' to prevent SecurityError
  * from cross-origin Google Fonts stylesheets, with an automatic fallback to html2canvas if needed.
  */
-async function renderElementToDataUrl(
+export async function renderElementToDataUrl(
   element: HTMLElement,
   options: RenderOptions = {}
 ): Promise<string> {
@@ -142,35 +142,54 @@ export async function exportElementAsPdf(
   }
 }
 
+export type PrintPaperSize = 'carta' | 'oficio' | 'a4';
+
+export const PAPER_DIMENSIONS_MM: Record<PrintPaperSize, { widthMm: number; heightMm: number; label: string }> = {
+  carta: { widthMm: 279.4, heightMm: 215.9, label: 'Carta (279.4 × 215.9 mm / 11″ × 8.5″)' },
+  oficio: { widthMm: 355.6, heightMm: 215.9, label: 'Oficio (355.6 × 215.9 mm / 14″ × 8.5″)' },
+  a4: { widthMm: 297.0, heightMm: 210.0, label: 'A4 (297 × 210 mm)' }
+};
+
+
 /**
- * Exports an 8-card printable sheet (4x2 grid in landscape) to PDF.
- * Supports A4 (297 x 210 mm) or Carta / US Letter (279.4 x 215.9 mm).
+ * Exports one or multiple 8-card printable sheets (4x2 grid in landscape) to PDF.
+ * Supports Carta / US Letter (279.4 x 215.9 mm), Oficio / Legal (355.6 x 215.9 mm), and A4 (297 x 210 mm).
  */
 export async function exportEightCardSheetAsPdf(
-  element: HTMLElement,
-  paperSize: 'a4' | 'carta' = 'a4',
+  elements: HTMLElement | HTMLElement[],
+  paperSize: PrintPaperSize = 'carta',
   fileName: string = 'hoja_8_cartas_papa_tumbay.pdf'
 ): Promise<void> {
   try {
-    const isA4 = paperSize === 'a4';
-    const targetWidthMm = isA4 ? 297 : 279.4;
-    const targetHeightMm = isA4 ? 210 : 215.9;
+    const sheetElements = Array.isArray(elements) ? elements : [elements];
+    if (sheetElements.length === 0) return;
 
-    const dataUrl = await renderElementToDataUrl(element, {
-      pixelRatio: 2.0,
-      backgroundColor: '#FFFFFF'
-    });
+    const { widthMm, heightMm } = PAPER_DIMENSIONS_MM[paperSize] || PAPER_DIMENSIONS_MM.carta;
 
+    // Use custom dimensions in mm so jsPDF uses the exact landscape paper size
     const pdf = new jsPDF({
       orientation: 'landscape',
       unit: 'mm',
-      format: isA4 ? 'a4' : 'letter'
+      format: [widthMm, heightMm]
     });
 
-    pdf.addImage(dataUrl, 'PNG', 0, 0, targetWidthMm, targetHeightMm, undefined, 'FAST');
+    for (let i = 0; i < sheetElements.length; i++) {
+      const el = sheetElements[i];
+      if (i > 0) {
+        pdf.addPage([widthMm, heightMm], 'landscape');
+      }
+
+      const dataUrl = await renderElementToDataUrl(el, {
+        pixelRatio: 2.0,
+        backgroundColor: '#FFFFFF'
+      });
+
+      pdf.addImage(dataUrl, 'PNG', 0, 0, widthMm, heightMm, undefined, 'FAST');
+    }
+
     pdf.save(fileName);
   } catch (err) {
-    console.error('Error exportando hoja de 8 cartas a PDF:', err);
+    console.error('Error exportando hoja(s) de 8 cartas a PDF:', err);
     throw err;
   }
 }
